@@ -18,7 +18,7 @@ Axios.interceptors.request.use(
 Axios.interceptors.response.use(
     response => {
         if(response.data.msg === '用户已登出！'){
-            window.location.href = '/ui/web/login'
+            window.location.href = '/login'
         }else{
             return response;
         }
@@ -27,6 +27,6 @@ Axios.interceptors.response.use(
     }
 );
 
-export const login = params => {
+export const register = params => {
     return Axios.post(`${URL}/register`, params)
 };
