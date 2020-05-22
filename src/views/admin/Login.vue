@@ -8,14 +8,15 @@
                 <el-input v-model="ruleForm.password" placeholder="密码"></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="login('ruleForm')" class="login-btn">登录</el-button>
+                <el-button type="primary" @click="login('ruleForm')" class="login-btn" :loading="loading">登录</el-button>
             </el-form-item>
         </el-form>
     </div>
 </template>
 
 <script>
-    import {register} from '../../apis'
+    import {login} from '../../apis'
+
     export default {
         name: "",
         data() {
@@ -33,6 +34,7 @@
                 }, 100)
             };
             return {
+                loading: false,
                 ruleForm: {
                     email: '',
                     password: '',
@@ -51,12 +53,20 @@
             login(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        register({
-                            account: this.ruleForm.email,
+                        this.loading = true;
+                        login({
+                            email: this.ruleForm.email,
                             password: this.ruleForm.password,
                         }).then((res) => {
-                            console.log(res);
-                            // this.$message.success('登录成功！');
+                            if (res.data.status) {
+                                this.loading = false;
+                                sessionStorage.setItem('token', res.data.data.token);
+                                sessionStorage.setItem('nickname', res.data.data.nickname);
+                                this.$router.push({path: '/introduce'})
+                            } else {
+                                this.loading = false;
+                                this.$message.error(res.data.msg);
+                            }
                         }).catch((error) => {
                             console.log(error);
                         })
@@ -73,20 +83,19 @@
     .login-box {
         width: 100vw;
         height: 100vh;
-        background: url("../../assets/timg.gif") no-repeat;
+        background: url("../../assets/login-bg.jpg") no-repeat center;
         background-size: cover;
     }
 
     .login-form {
-        width: 300px;
+        width: 260px;
         height: 165px;
         padding: 50px 30px;
         border-radius: 10px;
         position: fixed;
         left: 0;
         right: 0;
-        top: 0;
-        bottom: 0;
+        top: 30%;
         margin: auto;
 
         /deep/ .el-input__inner {

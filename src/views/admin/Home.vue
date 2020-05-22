@@ -8,7 +8,9 @@
                 <el-aside width="200px" class="aside-box">
                     <Slider/>
                 </el-aside>
-                <el-main class="main-box">Main</el-main>
+                <el-main class="main-box">
+                    <router-view></router-view>
+                </el-main>
             </el-container>
         </el-container>
     </div>

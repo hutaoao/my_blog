@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
-import Axios from 'axios';
+// import Axios from 'axios';
 import {
     Container,
     Header,
@@ -17,6 +17,9 @@ import {
     FormItem,
     Input,
     Button,
+    Message,
+    Dialog,
+    Upload,
 } from 'element-ui';
 
 Vue.use(Container);
@@ -33,10 +36,13 @@ Vue.use(Form);
 Vue.use(FormItem);
 Vue.use(Input);
 Vue.use(Button);
+Vue.use(Dialog);
+Vue.use(Upload);
 
 Vue.config.productionTip = false;
 
-Vue.prototype.$http = Axios;
+// Vue.prototype.$http = Axios;
+Vue.prototype.$message = Message;
 
 new Vue({
     router,
