@@ -1,21 +1,41 @@
 <template>
     <div class="login-box">
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0" class="login-form">
+        <el-form v-if="type === 'login'" size="small" :model="loginForm" :rules="loginRules" ref="loginForm" label-width="0" class="login-form">
             <el-form-item prop="email">
-                <el-input v-model="ruleForm.email" placeholder="邮箱"></el-input>
+                <el-input v-model="loginForm.email" prefix-icon="el-icon-user" placeholder="邮箱"></el-input>
             </el-form-item>
             <el-form-item prop="password">
-                <el-input v-model="ruleForm.password" placeholder="密码"></el-input>
+                <el-input v-model="loginForm.password" prefix-icon="el-icon-lock" placeholder="密码"></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="login('ruleForm')" class="login-btn" :loading="loading">登录</el-button>
+                <el-button type="primary" @click="login('loginForm')" class="login-btn" :loading="loading">登录</el-button>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="success" class="login-btn" @click="resetForm('loginForm', 'register')">去注册</el-button>
+            </el-form-item>
+        </el-form>
+        <el-form v-else size="small" :model="registerForm" :rules="registerRules" ref="registerForm" label-width="0" class="login-form">
+            <el-form-item prop="email2">
+                <el-input v-model="registerForm.email" prefix-icon="el-icon-user" placeholder="邮箱"></el-input>
+            </el-form-item>
+            <el-form-item prop="nickname2">
+                <el-input v-model="registerForm.nickname" prefix-icon="el-icon-lock" placeholder="昵称"></el-input>
+            </el-form-item>
+            <el-form-item prop="password2">
+                <el-input v-model="registerForm.password" prefix-icon="el-icon-lock" placeholder="密码"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="success" class="login-btn" :loading="rLoading" @click="register('registerForm')">注册</el-button>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" class="login-btn" @click="resetForm('registerForm', 'login')">去登录</el-button>
             </el-form-item>
         </el-form>
     </div>
 </template>
 
 <script>
-    import {login} from '../../apis'
+    import {login, register} from '../../apis'
 
     export default {
         name: "",
@@ -23,7 +43,7 @@
             const checkEmail = (rule, value, callback) => {
                 const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/
                 if (!value) {
-                    return callback(new Error('邮箱不能为空'))
+                    return callback(new Error('请输入邮箱'))
                 }
                 setTimeout(() => {
                     if (mailReg.test(value)) {
@@ -34,29 +54,51 @@
                 }, 100)
             };
             return {
+                type: 'login',
                 loading: false,
-                ruleForm: {
+                rLoading: false,
+                loginForm: {
                     email: '',
                     password: '',
                 },
-                rules: {
+                registerForm: {
+                    email: '',
+                    nickname: '',
+                    password: '',
+                },
+                loginRules: {
                     email: [
                         {validator: checkEmail, trigger: 'blur'}
                     ],
                     password: [
                         {required: true, message: '请输入密码', trigger: 'blur'}
-                    ]
+                    ],
+                    nickname: [
+                        {required: true, message: '请输入昵称', trigger: 'blur'}
+                    ],
+                },
+                registerRules: {
+                    email2: [
+                        {validator: checkEmail, trigger: 'blur'}
+                    ],
+                    nickname2: [
+                        {required: true, message: '请输入昵称', trigger: 'blur'}
+                    ],
+                    password2: [
+                        {required: true, message: '请输入密码', trigger: 'blur'}
+                    ],
                 }
             }
         },
         methods: {
+            //登录
             login(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         this.loading = true;
                         login({
-                            email: this.ruleForm.email,
-                            password: this.ruleForm.password,
+                            email: this.loginForm.email,
+                            password: this.loginForm.password,
                         }).then((res) => {
                             if (res.data.status) {
                                 this.loading = false;
@@ -74,6 +116,36 @@
                         return false;
                     }
                 });
+            },
+            //注册
+            register(formName){
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        this.rLoading = true;
+                        register({
+                            email: this.registerForm.email,
+                            nickname: this.registerForm.nickname,
+                            password: this.registerForm.password,
+                        }).then((res) => {
+                            if (res.data.status) {
+                                this.rLoading = false;
+                                this.$message.success(res.data.msg);
+                            } else {
+                                this.rLoading = false;
+                                this.$message.error(res.data.msg);
+                            }
+                        }).catch((error) => {
+                            console.log(error);
+                        })
+                    }else{
+                        return false;
+                    }
+                })
+            },
+            //重置
+            resetForm(formName, type) {
+                this.type = type;
+                this.$refs[formName].resetFields();
             }
         }
     }

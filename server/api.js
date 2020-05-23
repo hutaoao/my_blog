@@ -63,8 +63,8 @@ module.exports = {
                     });
                     connection.release();
                 } else {
-                    let username = postData.email, password = postData.password;
-                    connection.query(sql.user.insert, [username, password], (err, result) => {
+                    let [username, nickname, password] = [postData.email, postData.nickname, postData.password];
+                    connection.query(sql.user.insert, [username, nickname, password], (err, result) => {
                         let status = true, msg = '注册成功';
                         if (err) {
                             status = false;
