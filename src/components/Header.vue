@@ -4,7 +4,7 @@
         <div class="head-portrait">
             <span class="name">{{nickname}}</span>
             <el-dropdown @command="handleCommand">
-                <img src="../assets/logo.jpg" alt="" class="head-img">
+                <img :src="imageUrl" alt="" class="head-img">
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item command="a">更改头像</el-dropdown-item>
                     <el-dropdown-item command="b">修改密码</el-dropdown-item>
@@ -20,8 +20,7 @@
                     action=""
                     class="avatar-uploader"
                     :show-file-list="false"
-                    :on-success="handleAvatarSuccess"
-                    :before-upload="beforeAvatarUpload">
+                    :http-request="uploadRequest">
                 <img v-if="imageUrl" :src="imageUrl" class="avatar" alt="img">
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
@@ -50,7 +49,9 @@
 </template>
 
 <script>
-    import {changePassword} from '../apis'
+    import img from '../assets/logo.jpg';
+    import {changePassword, uploadImg} from '../apis';
+
     export default {
         name: "",
         data() {
@@ -73,8 +74,10 @@
                     callback();
                 }
             };
+            const portrait = sessionStorage.getItem('portrait');//头像
             return {
-                imageUrl: '',
+                imageUrl: portrait ? portrait : img,
+                nickname: sessionStorage.getItem('nickname'),
                 loading: false,
                 upDialogVisible: false,
                 cpDialogVisible: false,
@@ -83,7 +86,6 @@
                     newPass: '',
                     checkPass: '',
                 },
-                nickname: sessionStorage.getItem('nickname'),
                 rules: {
                     oldPass: [
                         {required: true, message: '请输入原始密码', trigger: 'blur'}
@@ -108,21 +110,32 @@
                     this.$router.push({path: '/login'});
                 }
             },
-            handleAvatarSuccess(res, file) {
-                this.imageUrl = URL.createObjectURL(file.raw);
-            },
             //上传头像
-            beforeAvatarUpload(file) {
-                const isJPG = file.type === 'image/jpeg';
-                const isLt2M = file.size / 1024 / 1024 < 2;
-
+            uploadRequest(file) {
+                const isJPG = file.file.type === 'image/jpeg' || 'image/png';
+                const isLt1M = file.file.size / 1024 / 1024 < 1;
+                console.log(file)
                 if (!isJPG) {
-                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                    this.$message.error('上传头像图片只能是 JPG/PNG 格式!');
+                    return false;
                 }
-                if (!isLt2M) {
-                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                if (!isLt1M) {
+                    this.$message.error('上传头像图片大小不能超过 1MB!');
+                    return false;
                 }
-                return isJPG && isLt2M;
+                let params = new FormData();
+                params.append('imgFile', file.file);
+                uploadImg(params).then((res) => {
+                    if (res.data.status) {
+                        this.imageUrl = res.data.data;
+                        sessionStorage.setItem('portrait', res.data.data);
+                        this.$message.success(res.data.msg);
+                    } else {
+                        this.$message.error(res.data.msg);
+                    }
+                }).catch((error) => {
+                    console.log(error);
+                })
             },
             //修改密码
             submitForm(formName) {
@@ -154,7 +167,7 @@
                     }
                 });
             },
-            cancel(){
+            cancel() {
                 this.cpDialogVisible = false;
             }
         }

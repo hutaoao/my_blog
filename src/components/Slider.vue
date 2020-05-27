@@ -3,7 +3,7 @@
         <el-menu
                 text-color="#fff"
                 background-color="#545c64"
-                active-text-color="#ffd04b"
+                active-text-color="#409eff"
                 @select="selectMenu"
                 :default-active="defaultActive"
         >

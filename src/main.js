@@ -20,6 +20,13 @@ import {
     Message,
     Dialog,
     Upload,
+    Tag,
+    Table,
+    TableColumn,
+    Popover,
+    Popconfirm,
+    Breadcrumb,
+    BreadcrumbItem,
 } from 'element-ui';
 
 Vue.use(Container);
@@ -38,6 +45,13 @@ Vue.use(Input);
 Vue.use(Button);
 Vue.use(Dialog);
 Vue.use(Upload);
+Vue.use(Tag);
+Vue.use(Table);
+Vue.use(TableColumn);
+Vue.use(Popover);
+Vue.use(Popconfirm);
+Vue.use(Breadcrumb);
+Vue.use(BreadcrumbItem);
 
 Vue.config.productionTip = false;
 

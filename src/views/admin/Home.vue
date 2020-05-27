@@ -38,4 +38,8 @@
         height: calc(100vh - 60px);
         background-color: #545c64;
     }
+
+    .main-box {
+        height: calc(100vh - 60px);
+    }
 </style>

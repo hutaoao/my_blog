@@ -49,10 +49,10 @@ const router = new Router({
             meta: {requiresAuth: false},
             component: () => import('../views/404.vue')
         },
-        {
+        /*{
             path: "*",
             redirect: "/404"  //路由重定向
-        }
+        }*/
     ]
 });
 

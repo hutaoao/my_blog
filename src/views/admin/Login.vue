@@ -1,6 +1,6 @@
 <template>
     <div class="login-box">
-        <el-form v-if="type === 'login'" size="small" :model="loginForm" :rules="loginRules" ref="loginForm" label-width="0" class="login-form">
+        <el-form v-show="type === 'login'" size="small" :model="loginForm" :rules="loginRules" ref="loginForm" label-width="0" class="login-form">
             <el-form-item prop="email">
                 <el-input v-model="loginForm.email" prefix-icon="el-icon-user" placeholder="邮箱"></el-input>
             </el-form-item>
@@ -14,14 +14,14 @@
                 <el-button type="success" class="login-btn" @click="resetForm('loginForm', 'register')">去注册</el-button>
             </el-form-item>
         </el-form>
-        <el-form v-else size="small" :model="registerForm" :rules="registerRules" ref="registerForm" label-width="0" class="login-form">
-            <el-form-item prop="email2">
+        <el-form v-show="type === 'register'" size="small" :model="registerForm" :rules="registerRules" ref="registerForm" label-width="0" class="login-form">
+            <el-form-item prop="email">
                 <el-input v-model="registerForm.email" prefix-icon="el-icon-user" placeholder="邮箱"></el-input>
             </el-form-item>
-            <el-form-item prop="nickname2">
+            <el-form-item prop="nickname">
                 <el-input v-model="registerForm.nickname" prefix-icon="el-icon-lock" placeholder="昵称"></el-input>
             </el-form-item>
-            <el-form-item prop="password2">
+            <el-form-item prop="password">
                 <el-input v-model="registerForm.password" prefix-icon="el-icon-lock" placeholder="密码"></el-input>
             </el-form-item>
             <el-form-item>
@@ -78,17 +78,20 @@
                     ],
                 },
                 registerRules: {
-                    email2: [
+                    email: [
                         {validator: checkEmail, trigger: 'blur'}
                     ],
-                    nickname2: [
+                    nickname: [
                         {required: true, message: '请输入昵称', trigger: 'blur'}
                     ],
-                    password2: [
+                    password: [
                         {required: true, message: '请输入密码', trigger: 'blur'}
                     ],
                 }
             }
+        },
+        mounted() {
+            sessionStorage.clear();
         },
         methods: {
             //登录
@@ -104,6 +107,9 @@
                                 this.loading = false;
                                 sessionStorage.setItem('token', res.data.data.token);
                                 sessionStorage.setItem('nickname', res.data.data.nickname);
+                                if(res.data.data.portrait){
+                                    sessionStorage.setItem('portrait', res.data.data.portrait);
+                                }
                                 this.$router.push({path: '/introduce'})
                             } else {
                                 this.loading = false;
@@ -111,6 +117,7 @@
                             }
                         }).catch((error) => {
                             console.log(error);
+                            this.loading = false;
                         })
                     } else {
                         return false;
