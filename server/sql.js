@@ -13,7 +13,8 @@ module.exports = {
         update: 'UPDATE article SET title = ?, introduce = ?, tags = ?, content = ?, html = ?, update_at = ?, status = ? WHERE id = ?', //更新文章
         getByUser: 'SELECT * FROM article WHERE user_id = ? AND status <> 0', //获取文章列表
         getById: 'SELECT * FROM article WHERE id = ?', //获取文章详情
-        getAll: 'SELECT * FROM article WHERE status <> 0', //获取所有文章列表
+        getAllNum: 'SELECT COUNT(*) total FROM article', //查询文章条数 - 聚合查询
+        getAll: 'SELECT * FROM article WHERE status = 1 LIMIT ? OFFSET ?', //获取所有文章列表 - 分页查询
         publish: 'UPDATE article SET status = 1 WHERE id = ?', //发布文章
         delete: 'UPDATE article SET status = 0 WHERE id = ?', //删除文章 - 逻辑删除
     }

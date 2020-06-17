@@ -70,9 +70,14 @@ router.get('/getAllArticle', (req, res, next) => {
     api.getAllArticle(req, res, next);
 })
 
-//获取文章详情
+//获取文章详情 - 需要登录验证
 router.get('/getDetailArticle', (req, res, next) => {
     api.getDetailArticle(req, res, next);
+})
+
+//获取文章详情 - 不需要登录验证
+router.get('/getArticleDetail', (req, res, next) => {
+    api.getArticleDetail(req, res, next);
 })
 
 //删除文章

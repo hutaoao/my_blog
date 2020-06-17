@@ -101,11 +101,12 @@ module.exports = {
                                     status: false,
                                     msg: '服务器出错,请稍后再试'
                                 });
+                            } else {
+                                res.json({
+                                    status: true,
+                                    msg: '密码修改成功'
+                                });
                             }
-                            res.json({
-                                status: true,
-                                msg: '密码修改成功'
-                            });
                             connection.release();
                         })
                     }
@@ -125,12 +126,13 @@ module.exports = {
                             status: false,
                             msg: '服务器出错,请稍后再试'
                         });
+                    } else {
+                        res.json({
+                            status: true,
+                            data: url,
+                            msg: '头像上传成功'
+                        });
                     }
-                    res.json({
-                        status: true,
-                        data: url,
-                        msg: '头像上传成功'
-                    });
                     connection.release();
                 })
             })
@@ -246,11 +248,12 @@ module.exports = {
                             status: false,
                             msg: '服务器出错,请稍后再试'
                         });
+                    } else {
+                        res.json({
+                            status: true,
+                            data: result
+                        });
                     }
-                    res.json({
-                        status: true,
-                        data: result
-                    });
                     connection.release();
                 })
             })
@@ -258,27 +261,39 @@ module.exports = {
     },
     //获取所有文章
     getAllArticle(req, res) {
-        const userId = this.checkJwt(req, res);
-        if (userId) {
-            pool.getConnection((err, connection) => {
-                connection.query(sql.article.getAll, [], (err, result) => {
+        pool.getConnection((err, connection) => {
+            let getData = req.query;
+            let pageSize = Number(getData.pageSize);
+            let pageIndex = Number(getData.pageIndex);
+            let index = pageSize * (pageIndex - 1);
+            connection.query(sql.article.getAllNum, (err, Result) => {
+                if (err) {
+                    res.json({
+                        status: false,
+                        msg: '服务器出错,请稍后再试'
+                    });
+                }
+                connection.query(sql.article.getAll, [pageSize, index], (err, result) => {
                     if (err) {
                         res.json({
                             status: false,
                             msg: '服务器出错,请稍后再试'
                         });
+                    } else {
+                        res.json({
+                            status: true,
+                            data: result,
+                            total: Result[0].total,
+                        });
                     }
-                    res.json({
-                        status: true,
-                        data: result
-                    });
-                    connection.release();
                 })
+                connection.release();
             })
-        }
+
+        })
     },
-    //获取文章详情
-    getDetailArticle(req, res){
+    //获取文章详情 - 需要登录验证
+    getDetailArticle(req, res) {
         const userId = this.checkJwt(req, res);
         if (userId) {
             pool.getConnection((err, connection) => {
@@ -288,15 +303,35 @@ module.exports = {
                             status: false,
                             msg: '服务器出错,请稍后再试'
                         });
+                    } else {
+                        res.json({
+                            status: true,
+                            data: result[0]
+                        });
                     }
-                    res.json({
-                        status: true,
-                        data: result[0]
-                    });
                     connection.release();
                 })
             })
         }
+    },
+    //获取文章详情 - 不需要登录验证
+    getArticleDetail(req, res) {
+        pool.getConnection((err, connection) => {
+            connection.query(sql.article.getById, [req.query.id], (err, result) => {
+                if (err) {
+                    res.json({
+                        status: false,
+                        msg: '服务器出错,请稍后再试'
+                    });
+                } else {
+                    res.json({
+                        status: true,
+                        data: result[0]
+                    });
+                }
+                connection.release();
+            })
+        })
     },
     //删除文章
     delArticle(req, res) {
@@ -309,11 +344,12 @@ module.exports = {
                             status: false,
                             msg: '服务器出错,请稍后再试'
                         });
+                    } else {
+                        res.json({
+                            status: true,
+                            msg: '删除成功'
+                        });
                     }
-                    res.json({
-                        status: true,
-                        msg: '删除成功'
-                    });
                     connection.release();
                 })
             })
@@ -322,19 +358,20 @@ module.exports = {
     //发布文章
     pubArticle(req, res) {
         const userId = this.checkJwt(req, res);
-        if(userId){
-            pool.getConnection((err, connection)=>{
-                connection.query(sql.article.publish, [req.body.id], (err, result)=>{
+        if (userId) {
+            pool.getConnection((err, connection) => {
+                connection.query(sql.article.publish, [req.body.id], (err, result) => {
                     if (err) {
                         res.json({
                             status: false,
                             msg: '服务器出错,请稍后再试'
                         });
+                    } else {
+                        res.json({
+                            status: true,
+                            msg: '发布成功'
+                        });
                     }
-                    res.json({
-                        status: true,
-                        msg: '发布成功'
-                    });
                     connection.release();
                 })
             })
