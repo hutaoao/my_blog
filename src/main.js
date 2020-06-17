@@ -27,6 +27,8 @@ import {
     Popconfirm,
     Breadcrumb,
     BreadcrumbItem,
+    Pagination,
+    Backtop,
 } from 'element-ui';
 
 Vue.use(Container);
@@ -52,6 +54,8 @@ Vue.use(Popover);
 Vue.use(Popconfirm);
 Vue.use(Breadcrumb);
 Vue.use(BreadcrumbItem);
+Vue.use(Pagination);
+Vue.use(Backtop);
 
 Vue.config.productionTip = false;
 

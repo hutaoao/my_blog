@@ -12,12 +12,16 @@
 
 <style>
     #app {
-        font-family: Avenir, Helvetica, Arial, sans-serif;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
+        font-family: 'Lato', "PingFang SC", "Microsoft YaHei", sans-serif;
+        /*-webkit-font-smoothing: antialiased; //抗锯齿*/
+        /*-moz-osx-font-smoothing: grayscale;*/
     }
     *{
         margin: 0;
         padding: 0;
+    }
+    a{
+        color: #555555;
+        text-decoration: none;
     }
 </style>

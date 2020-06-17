@@ -76,9 +76,14 @@ export const getAllArticle = params => {
     return Axios.get(`${URL}/getAllArticle`, {params})
 };
 
-//获取所有文章详情
+//获取所有文章详情 - 需要登录验证
 export const getDetailArticle = params => {
     return Axios.get(`${URL}/getDetailArticle`, {params})
+};
+
+//获取所有文章详情 - 不需要登录验证
+export const getArticleDetail = params => {
+    return Axios.get(`${URL}/getArticleDetail`, {params})
 };
 
 //删除文章

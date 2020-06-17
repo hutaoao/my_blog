@@ -49,8 +49,8 @@
 </template>
 
 <script>
-    import img from '../assets/logo.jpg';
-    import {changePassword, uploadImg} from '../apis';
+    import img from '../../assets/logo.jpg';
+    import {changePassword, uploadImg} from '../../apis';
 
     export default {
         name: "",

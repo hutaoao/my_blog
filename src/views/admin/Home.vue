@@ -17,8 +17,8 @@
 </template>
 
 <script>
-    import Header from '../../components/Header';
-    import Slider from '../../components/Slider';
+    import Header from '../../components/Admin/Header';
+    import Slider from '../../components/Admin/Slider';
 
     export default {
         name: "",
